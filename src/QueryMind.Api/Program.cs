@@ -4,6 +4,7 @@ using QueryMind.Api.Analytics;
 using QueryMind.Api.Schema;
 using QueryMind.Api.History;
 using QueryMind.Api.Evaluation;
+using QueryMind.Api.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProblemDetails();
@@ -21,6 +22,7 @@ else
 builder.Services.AddSingleton<AnalysisOrchestrator>();
 builder.Services.AddSingleton<QueryHistoryRepository>();
 builder.Services.AddSingleton<EvaluationService>();
+builder.Services.AddSingleton<AnalysisMetrics>();
 builder.Services.AddSingleton<SchemaDiscoveryService>();
 var app = builder.Build();
 app.UseExceptionHandler();
