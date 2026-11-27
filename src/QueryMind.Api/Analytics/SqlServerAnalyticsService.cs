@@ -37,6 +37,8 @@ public sealed class SqlServerAnalyticsService(IConfiguration configuration)
             """)
     };
 
+    public static bool TryGetDefinition(string questionId, out QueryDefinition definition) => Queries.TryGetValue(questionId, out definition!);
+
     public async Task<AnalyticsResult> ExecuteAsync(string questionId, CancellationToken cancellationToken)
     {
         if (!Queries.TryGetValue(questionId, out var query))
@@ -93,5 +95,5 @@ public sealed class SqlServerAnalyticsService(IConfiguration configuration)
         return null;
     }
 
-    private sealed record QueryDefinition(string Title, string LabelColumn, string ValueColumn, string ChartType, string Sql);
+    public sealed record QueryDefinition(string Title, string LabelColumn, string ValueColumn, string ChartType, string Sql);
 }

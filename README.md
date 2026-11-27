@@ -4,7 +4,7 @@
 
 QueryMind is an AI-powered analytics workspace being built to help users explore relational data through natural-language questions. It is a focused portfolio project demonstrating .NET, Angular, SQL Server, secure analytics boundaries, and deliberate product design.
 
-> **Current capability:** Predefined analyses execute application-owned, read-only SQL Server statements. AI-generated SQL and generated insights are not claimed as implemented.
+> **Current capability:** A reviewed local provider maps supported questions to approved SQL templates. Every candidate statement is parsed through a SQL AST safety gate before a read-only SQL Server query runs.
 
 ## Why QueryMind?
 
@@ -26,7 +26,8 @@ The application, rather than an LLM, remains in control of schema access, SQL va
 
 - Interactive Angular analytics workspace with responsive navigation and light/dark themes.
 - Suggested revenue, category, customer, region, and cancellation analyses.
-- Lightweight natural-language intent matching to a bounded set of predefined analyses.
+- A bounded local natural-language provider for the five curated analyses, with provider attribution.
+- SQL Server ScriptDom AST validation: one `SELECT`, approved `analytics` tables only, no `SELECT INTO`, external rowsets, or multi-statement scripts.
 - Results canvas with a visualization, tabular data, SQL preview, and execution metadata.
 - Schema Explorer backed by the API's curated schema contract.
 - In-browser query history for the current session.
@@ -117,7 +118,7 @@ The current database foundation is deliberately structured for restricted analyt
 - Application and analytics data are isolated into separate SQL Server databases.
 - A dedicated `analytics_reader` login receives `SELECT` access only to the analytics schema.
 - Secrets are supplied through the ignored local `.env` file, never committed.
-- The AI analytics capability will treat all generated SQL as untrusted input and enforce a strict read-only validation and execution boundary.
+- Model-proposed SQL is treated as untrusted input and passes through a strict AST validation boundary before execution.
 
 ## Roadmap
 
@@ -130,9 +131,9 @@ The current database foundation is deliberately structured for restricted analyt
 
 ### Secure AI analytics
 
-- [ ] Configurable model provider abstraction
-- [ ] Schema-aware natural language to SQL
-- [ ] SQL Server query validation and restricted execution
+- [x] Provider abstraction and bounded local question interpretation
+- [x] SQL AST validation and reviewed-template execution boundary
+- [ ] Configurable external provider and schema-aware SQL generation
 - [ ] Bounded regeneration, grounded insights, and persistent history
 
 ### Evaluation and portfolio polish
@@ -143,8 +144,8 @@ The current database foundation is deliberately structured for restricted analyt
 
 ## Known limitations
 
-- Natural-language input maps to a bounded predefined analysis set, not arbitrary SQL.
-- SQL statements are application-owned predefined queries; model-generated SQL is not yet supported.
+- Natural-language input maps to a bounded reviewed analysis set, not arbitrary SQL.
+- The local provider only selects application-owned templates; an external model provider is not configured.
 - AI evaluation, model telemetry, and persistent history are planned work.
 - The app is an MVP foundation, not a production-ready analytics service.
 
@@ -153,4 +154,5 @@ The current database foundation is deliberately structured for restricted analyt
 - [Architecture](docs/architecture.md)
 - [Development setup](docs/development-setup.md)
 - [Roadmap](docs/roadmap.md)
+- [Secure AI analytics boundary](docs/secure-ai-analytics.md)
 - [Foundation development log](docs/development-log/foundation.md)
