@@ -4,7 +4,7 @@
 
 QueryMind is an AI-powered analytics workspace being built to help users explore relational data through natural-language questions. It is a focused portfolio project demonstrating .NET, Angular, SQL Server, secure analytics boundaries, and deliberate product design.
 
-> **Current milestone:** Day 1 foundation. Predefined analyses execute application-owned, read-only SQL Server statements. AI-generated SQL and generated insights are not claimed as implemented.
+> **Current capability:** Predefined analyses execute application-owned, read-only SQL Server statements. AI-generated SQL and generated insights are not claimed as implemented.
 
 ## Why QueryMind?
 
@@ -26,7 +26,7 @@ The application, rather than an LLM, remains in control of schema access, SQL va
 
 - Interactive Angular analytics workspace with responsive navigation and light/dark themes.
 - Suggested revenue, category, customer, region, and cancellation analyses.
-- Lightweight natural-language intent matching to a bounded set of Day 1 analyses.
+- Lightweight natural-language intent matching to a bounded set of predefined analyses.
 - Results canvas with a visualization, tabular data, SQL preview, and execution metadata.
 - Schema Explorer backed by the API's curated schema contract.
 - In-browser query history for the current session.
@@ -45,9 +45,9 @@ QueryMind uses a pragmatic modular monolith: one ASP.NET Core API and one Angula
 ```mermaid
 flowchart TB
     UI[Angular workspace] --> API[ASP.NET Core API]
-    API --> D[Deterministic Day 1 analytics]
+    API --> D[Predefined SQL analytics]
     API --> SC[Schema discovery]
-    API -. Day 2 .-> SQ[Restricted SQL execution]
+    API -. Next capability .-> SQ[Restricted SQL execution]
     SQ --> A[(QueryMindAnalytics)]
     API --> APP[(QueryMindApp)]
 ```
@@ -117,25 +117,25 @@ The current database foundation is deliberately structured for restricted analyt
 - Application and analytics data are isolated into separate SQL Server databases.
 - A dedicated `analytics_reader` login receives `SELECT` access only to the analytics schema.
 - Secrets are supplied through the ignored local `.env` file, never committed.
-- Day 2 will treat all generated SQL as untrusted input and enforce a strict read-only validation and execution boundary.
+- The AI analytics capability will treat all generated SQL as untrusted input and enforce a strict read-only validation and execution boundary.
 
 ## Roadmap
 
-### Day 1 — Foundation
+### Foundation
 
 - [x] API and Angular workspace
 - [x] SQL Server Docker topology and deterministic retail seed data
 - [x] Schema contract and predefined read-only SQL analytics
 - [x] CI and initial architecture documentation
 
-### Day 2 — Secure AI analytics
+### Secure AI analytics
 
 - [ ] Configurable model provider abstraction
 - [ ] Schema-aware natural language to SQL
 - [ ] SQL Server query validation and restricted execution
 - [ ] Bounded regeneration, grounded insights, and persistent history
 
-### Day 3 — Evaluation and portfolio polish
+### Evaluation and portfolio polish
 
 - [ ] AI evaluation dataset and runner
 - [ ] Observability and execution metrics
@@ -144,7 +144,7 @@ The current database foundation is deliberately structured for restricted analyt
 ## Known limitations
 
 - Natural-language input maps to a bounded predefined analysis set, not arbitrary SQL.
-- SQL statements are application-owned Day 1 queries; model-generated SQL is not yet supported.
+- SQL statements are application-owned predefined queries; model-generated SQL is not yet supported.
 - AI evaluation, model telemetry, and persistent history are planned work.
 - The app is an MVP foundation, not a production-ready analytics service.
 
@@ -153,4 +153,4 @@ The current database foundation is deliberately structured for restricted analyt
 - [Architecture](docs/architecture.md)
 - [Development setup](docs/development-setup.md)
 - [Roadmap](docs/roadmap.md)
-- [Day 1 development log](docs/development-log/day-01.md)
+- [Foundation development log](docs/development-log/foundation.md)

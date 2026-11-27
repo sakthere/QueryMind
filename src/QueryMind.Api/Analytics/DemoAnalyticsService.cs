@@ -1,6 +1,6 @@
 namespace QueryMind.Api.Analytics;
 
-/// <summary>Day 1 deterministic analytics. Restricted model-generated SQL is deliberately deferred to Day 2.</summary>
+/// <summary>Fallback fixture analytics. Restricted model-generated SQL is deliberately deferred to the AI analytics capability.</summary>
 public sealed class DemoAnalyticsService
 {
     private static readonly IReadOnlyList<SuggestedQuestion> Questions = [
@@ -12,5 +12,5 @@ public sealed class DemoAnalyticsService
         "top-customers" => Create(questionId, "Highest lifetime value customers", "Customer", "Lifetime Value", [("Maya Patel",18240m),("Noah Wilson",16780m),("Amelia Chen",15920m),("Liam Turner",14890m),("Olivia Brown",14130m)], "bar", "SELECT c.full_name, SUM(o.total_amount) FROM analytics.orders o JOIN analytics.customers c ON c.id = o.customer_id WHERE o.status = 'completed' GROUP BY 1 ORDER BY 2 DESC LIMIT 5;"),
         "regional-performance" => Create(questionId, "Regional performance", "Region", "Revenue", [("West",462150m),("North",421330m),("South",356480m),("East",296950m)], "bar", "SELECT r.name, SUM(o.total_amount) FROM analytics.orders o JOIN analytics.regions r ON r.id = o.region_id WHERE o.status = 'completed' GROUP BY 1 ORDER BY 2 DESC;"),
         "cancellation-rate" => Create(questionId, "Order cancellation rate", "Status", "Orders", [("Completed",9120m),("Cancelled",530m),("Returned",350m)], "donut", "SELECT status, COUNT(*) FROM analytics.orders GROUP BY status ORDER BY 2 DESC;"), _ => throw new KeyNotFoundException($"Unknown predefined question '{questionId}'.") };
-    private static AnalyticsResult Create(string id, string title, string left, string right, IEnumerable<(string Label, decimal Value)> values, string type, string sql) { var points = values.Select(x => new ChartPoint(x.Label, x.Value)).ToList(); var rows = points.Select(x => (IReadOnlyDictionary<string, object>)new Dictionary<string, object> { [left] = x.Label, [right] = x.Value }).ToList(); return new(id, title, [left, right], rows, new(type, left, right, points), sql, new("Deterministic Day 1 fixture — not model generated", rows.Count, 12, "retail-demo-v1")); }
+    private static AnalyticsResult Create(string id, string title, string left, string right, IEnumerable<(string Label, decimal Value)> values, string type, string sql) { var points = values.Select(x => new ChartPoint(x.Label, x.Value)).ToList(); var rows = points.Select(x => (IReadOnlyDictionary<string, object>)new Dictionary<string, object> { [left] = x.Label, [right] = x.Value }).ToList(); return new(id, title, [left, right], rows, new(type, left, right, points), sql, new("Deterministic fallback fixture — not model generated", rows.Count, 12, "retail-demo-v1")); }
 }

@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 
 namespace QueryMind.Api.Analytics;
 
-/// <summary>Executes only application-owned, parameter-free Day 1 analytics statements with a read-only SQL Server login.</summary>
+/// <summary>Executes only application-owned, parameter-free analytics statements with a read-only SQL Server login.</summary>
 public sealed class SqlServerAnalyticsService(IConfiguration configuration)
 {
     private const int CommandTimeoutSeconds = 10;
