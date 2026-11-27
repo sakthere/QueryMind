@@ -15,7 +15,7 @@ services:
       retries: 15
       start_period: 30s
   sql-init:
-    image: mcr.microsoft.com/mssql-tools18:latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     depends_on:
       sqlserver:
         condition: service_healthy
