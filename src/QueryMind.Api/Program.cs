@@ -9,6 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod()));
 builder.Services.AddRateLimiter(options => options.AddFixedWindowLimiter("analytics", limiter => { limiter.PermitLimit = 30; limiter.Window = TimeSpan.FromMinutes(1); limiter.QueueLimit = 0; }));
 builder.Services.AddSingleton<DemoAnalyticsService>();
+builder.Services.AddSingleton<SqlServerAnalyticsService>();
 builder.Services.AddSingleton<SchemaDiscoveryService>();
 var app = builder.Build();
 app.UseExceptionHandler();

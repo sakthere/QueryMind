@@ -4,7 +4,7 @@
 
 QueryMind is an AI-powered analytics workspace being built to help users explore relational data through natural-language questions. It is a focused portfolio project demonstrating .NET, Angular, SQL Server, secure analytics boundaries, and deliberate product design.
 
-> **Current milestone:** Day 1 foundation. The interface intentionally labels all analytical responses as deterministic demo fixtures. AI-generated SQL, live SQL Server query execution, and generated insights are not claimed as implemented.
+> **Current milestone:** Day 1 foundation. Predefined analyses execute application-owned, read-only SQL Server statements. AI-generated SQL and generated insights are not claimed as implemented.
 
 ## Why QueryMind?
 
@@ -125,7 +125,7 @@ The current database foundation is deliberately structured for restricted analyt
 
 - [x] API and Angular workspace
 - [x] SQL Server Docker topology and deterministic retail seed data
-- [x] Schema contract and predefined analytics fixtures
+- [x] Schema contract and predefined read-only SQL analytics
 - [x] CI and initial architecture documentation
 
 ### Day 2 — Secure AI analytics
@@ -143,8 +143,8 @@ The current database foundation is deliberately structured for restricted analyt
 
 ## Known limitations
 
-- Current analytical results are deterministic fixtures, not live SQL Server results.
-- Natural-language input maps to a bounded predefined analysis set.
+- Natural-language input maps to a bounded predefined analysis set, not arbitrary SQL.
+- SQL statements are application-owned Day 1 queries; model-generated SQL is not yet supported.
 - AI evaluation, model telemetry, and persistent history are planned work.
 - The app is an MVP foundation, not a production-ready analytics service.
 
