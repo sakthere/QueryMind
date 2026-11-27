@@ -32,4 +32,7 @@ public sealed class RuleBasedAnalyticsModelProvider : IAnalyticsModelProvider
             : $"{highest.Label} is the largest displayed value at {highest.Value:N2}.";
         return Task.FromResult(new AnalysisInsight(summary, "Deterministic summary from returned SQL Server rows"));
     }
+
+    public Task<SqlGeneration> RepairSqlAsync(string question, string previousSql, string failureReason, CancellationToken cancellationToken)
+        => GenerateSqlAsync(question, cancellationToken);
 }

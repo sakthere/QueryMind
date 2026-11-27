@@ -27,6 +27,7 @@ The application, rather than an LLM, remains in control of schema access, SQL va
 - Interactive Angular analytics workspace with responsive navigation and light/dark themes.
 - Suggested revenue, category, customer, region, and cancellation analyses.
 - A bounded local natural-language provider for the five curated analyses, with provider attribution.
+- Curated schema context and a single bounded repair attempt for an explicitly configured external provider.
 - SQL Server ScriptDom AST validation: one `SELECT`, approved `analytics` tables only, no `SELECT INTO`, external rowsets, or multi-statement scripts.
 - Results canvas with a visualization, tabular data, SQL preview, and execution metadata.
 - Schema Explorer backed by the API's curated schema contract.

@@ -11,6 +11,10 @@ Each natural-language request follows this path:
 5. The existing `analytics_reader` SQL Server login runs the statement with `SELECT` access only and a ten-second command timeout.
 6. The response labels its provider and grounds its summary in the returned rows.
 
+When an external provider's first SQL proposal is rejected by the safety gate, QueryMind permits at most one repair request. That request includes the rejected SQL and the safety reason, then the replacement must pass the identical AST validation and restricted execution path. A second failure is returned as a blocked result; it is never executed.
+
+Only the curated table-and-column contract is supplied as schema context to an external provider. Database connection values, local environment values, and application history are never included in the prompt.
+
 This boundary is intentionally more restrictive than the future configurable model-provider interface. An external provider must use the same parser gate, restricted executor, row limit, and audit trail before it can be enabled.
 
 ## Current limitations

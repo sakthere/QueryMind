@@ -34,8 +34,23 @@ public sealed class AnalysisOrchestrator(
         }
         catch (SqlSafetyException exception)
         {
+            var repair = await modelProvider.RepairSqlAsync(request.Question, generated.Sql, exception.Message, cancellationToken);
+            if (!string.IsNullOrWhiteSpace(repair.Sql) && !string.Equals(repair.Sql.Trim(), generated.Sql.Trim(), StringComparison.Ordinal))
+            {
+                try
+                {
+                    var validated = sqlValidator.Validate(repair.Sql);
+                    stages.Add(new PipelineStage("SQL repair", "complete", "One bounded repair passed the safety gate."));
+                    var result = await analytics.ExecuteValidatedAsync(validated, repair.Title ?? "Analysis result", cancellationToken);
+                    var insight = await modelProvider.GenerateInsightAsync(result, cancellationToken);
+                    var response = new AnalysisResponse("complete", null, result, stages, [insight], repair.Provider, repair.Model, 1);
+                    await SaveHistoryAsync(request.Question, response, cancellationToken);
+                    return response;
+                }
+                catch (SqlSafetyException repairFailure) { exception = repairFailure; }
+            }
             stages.Add(new PipelineStage("SQL safety", "blocked", exception.Message));
-            return new AnalysisResponse("blocked", exception.Message, null, stages, [], generated.Provider, generated.Model, 0);
+            return new AnalysisResponse("blocked", exception.Message, null, stages, [], generated.Provider, generated.Model, 1);
         }
     }
 

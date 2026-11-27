@@ -22,5 +22,6 @@ public sealed record SqlGeneration(string? Sql, string? Title, string? Clarifica
 public interface IAnalyticsModelProvider
 {
     Task<SqlGeneration> GenerateSqlAsync(string question, CancellationToken cancellationToken);
+    Task<SqlGeneration> RepairSqlAsync(string question, string previousSql, string failureReason, CancellationToken cancellationToken);
     Task<AnalysisInsight> GenerateInsightAsync(AnalyticsResult result, CancellationToken cancellationToken);
 }
