@@ -1,20 +1,30 @@
 services:
-  analytics-db:
-    image: postgres:16-alpine
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      POSTGRES_DB: querymind_analytics
-      POSTGRES_USER: querymind_admin
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-dev-only}
-    ports: ["5432:5432"]
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env}
+    ports: ["1433:1433"]
     volumes:
-      - analytics-data:/var/lib/postgresql/data
-      - ./infra/postgres/01-schema-and-seed.sql:/docker-entrypoint-initdb.d/01-schema-and-seed.sql:ro
-  app-db:
-    image: postgres:16-alpine
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P $$MSSQL_SA_PASSWORD -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+  sql-init:
+    image: mcr.microsoft.com/mssql-tools18:latest
+    depends_on:
+      sqlserver:
+        condition: service_healthy
     environment:
-      POSTGRES_DB: querymind_app
-      POSTGRES_USER: querymind_app
-      POSTGRES_PASSWORD: ${APP_POSTGRES_PASSWORD:-local-dev-only}
-    ports: ["5433:5432"]
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env}
+      ANALYTICS_READER_PASSWORD: ${ANALYTICS_READER_PASSWORD:?Set ANALYTICS_READER_PASSWORD in .env}
+    volumes:
+      - ./infra/sqlserver/01-schema-and-seed.sql:/scripts/01-schema-and-seed.sql:ro
+    command: ["/bin/sh", "-c", "/opt/mssql-tools18/bin/sqlcmd -C -S sqlserver -U sa -P \"$$MSSQL_SA_PASSWORD\" -v \"AnalyticsReaderPassword=$$ANALYTICS_READER_PASSWORD\" -i /scripts/01-schema-and-seed.sql"]
+    restart: "no"
 volumes:
-  analytics-data:
+  sqlserver-data:
