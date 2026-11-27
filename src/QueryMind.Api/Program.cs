@@ -1,0 +1,20 @@
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
+using QueryMind.Api.Analytics;
+using QueryMind.Api.Schema;
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddProblemDetails();
+builder.Services.AddControllers();
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod()));
+builder.Services.AddRateLimiter(options => options.AddFixedWindowLimiter("analytics", limiter => { limiter.PermitLimit = 30; limiter.Window = TimeSpan.FromMinutes(1); limiter.QueueLimit = 0; }));
+builder.Services.AddSingleton<DemoAnalyticsService>();
+builder.Services.AddSingleton<SchemaDiscoveryService>();
+var app = builder.Build();
+app.UseExceptionHandler();
+app.UseCors();
+app.UseRateLimiter();
+app.MapControllers().RequireRateLimiting("analytics");
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", mode = "demo" }));
+app.Run();
+public partial class Program;

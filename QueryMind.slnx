@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/QueryMind.Api/QueryMind.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/QueryMind.Api.Tests/QueryMind.Api.Tests.csproj" />
+  </Folder>
+</Solution>

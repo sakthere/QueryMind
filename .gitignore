@@ -1,0 +1,6 @@
+.dotnet/
+**/bin/
+**/obj/
+web/node_modules/
+web/.angular/
+.env
