@@ -9,7 +9,7 @@ The foundation milestone provides a polished Angular workspace, deterministic pr
 ## Run locally
 
 1. `docker compose up -d` starts the two PostgreSQL databases and seeds 10,000 deterministic retail orders.
-2. `dotnet run --project src/QueryMind.Api --urls http://localhost:5080` starts the API.
+2. `dotnet run --project src/QueryMind.Api` starts the API at `http://localhost:5205`.
 3. In `web`, run `npm install` then `npm start`, and open `http://localhost:4200`.
 
 See [development setup](docs/development-setup.md) and [architecture](docs/architecture.md).
