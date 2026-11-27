@@ -20,12 +20,9 @@ public sealed class AnalysisOrchestrator(
 
         try
         {
-            sqlValidator.Validate(generated.Sql);
+            var validated = sqlValidator.Validate(generated.Sql);
             stages.Add(new PipelineStage("SQL safety", "complete", "Parsed as one approved read-only SELECT."));
-
-            // The local provider selects a reviewed template. A later external provider will use the same AST gate
-            // and a restricted generic executor before any SQL Server command is issued.
-            var result = await ExecuteReviewedTemplateAsync(generated.Sql, cancellationToken);
+            var result = await analytics.ExecuteValidatedAsync(validated, generated.Title ?? "Analysis result", cancellationToken);
             stages.Add(new PipelineStage("SQL Server", "complete", $"Returned {result.Metadata.RowCount} rows."));
             var insight = await modelProvider.GenerateInsightAsync(result, cancellationToken);
             stages.Add(new PipelineStage("Insight", "complete", insight.Source));
@@ -38,11 +35,4 @@ public sealed class AnalysisOrchestrator(
         }
     }
 
-    private Task<AnalyticsResult> ExecuteReviewedTemplateAsync(string sql, CancellationToken cancellationToken)
-    {
-        var match = new[] { "monthly-revenue", "category-revenue", "top-customers", "regional-performance", "cancellation-rate" }
-            .FirstOrDefault(id => SqlServerAnalyticsService.TryGetDefinition(id, out var definition) && string.Equals(definition.Sql.Trim(), sql.Trim(), StringComparison.Ordinal));
-        if (match is null) throw new SqlSafetyException("Only reviewed query templates can be executed while the local provider is active.");
-        return analytics.ExecuteAsync(match, cancellationToken);
-    }
 }

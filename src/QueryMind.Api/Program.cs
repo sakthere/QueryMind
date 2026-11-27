@@ -11,7 +11,11 @@ builder.Services.AddRateLimiter(options => options.AddFixedWindowLimiter("analyt
 builder.Services.AddSingleton<DemoAnalyticsService>();
 builder.Services.AddSingleton<SqlServerAnalyticsService>();
 builder.Services.AddSingleton<SafeSqlValidator>();
-builder.Services.AddSingleton<IAnalyticsModelProvider, RuleBasedAnalyticsModelProvider>();
+builder.Services.AddHttpClient("analytics-model", client => client.Timeout = TimeSpan.FromSeconds(20));
+if (string.Equals(builder.Configuration["AI:Provider"], "openai-compatible", StringComparison.OrdinalIgnoreCase))
+    builder.Services.AddSingleton<IAnalyticsModelProvider, OpenAiCompatibleAnalyticsModelProvider>();
+else
+    builder.Services.AddSingleton<IAnalyticsModelProvider, RuleBasedAnalyticsModelProvider>();
 builder.Services.AddSingleton<AnalysisOrchestrator>();
 builder.Services.AddSingleton<SchemaDiscoveryService>();
 var app = builder.Build();

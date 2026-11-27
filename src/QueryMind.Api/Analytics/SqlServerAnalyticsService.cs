@@ -44,23 +44,35 @@ public sealed class SqlServerAnalyticsService(IConfiguration configuration)
         if (!Queries.TryGetValue(questionId, out var query))
             throw new KeyNotFoundException($"Unknown predefined question '{questionId}'.");
 
+        return await ExecuteSqlAsync(query.Sql, query.Title, query.LabelColumn, query.ValueColumn, query.ChartType, questionId, cancellationToken);
+    }
+
+    public async Task<AnalyticsResult> ExecuteValidatedAsync(ValidatedSql validatedSql, string title, CancellationToken cancellationToken)
+        => await ExecuteSqlAsync(validatedSql.Sql, title, "Label", "Value", "bar", "generated-analysis", cancellationToken);
+
+    private async Task<AnalyticsResult> ExecuteSqlAsync(string sql, string title, string labelColumn, string valueColumn, string chartType, string questionId, CancellationToken cancellationToken)
+    {
         var stopwatch = Stopwatch.StartNew();
         await using var connection = new SqlConnection(GetConnectionString());
         await connection.OpenAsync(cancellationToken);
-        await using var command = new SqlCommand(query.Sql, connection) { CommandTimeout = CommandTimeoutSeconds };
+        await using var command = new SqlCommand(sql, connection) { CommandTimeout = CommandTimeoutSeconds };
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         var rows = new List<IReadOnlyDictionary<string, object>>();
         var points = new List<ChartPoint>();
-        while (await reader.ReadAsync(cancellationToken))
+        var columns = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToArray();
+        while (rows.Count < 500 && await reader.ReadAsync(cancellationToken))
         {
-            var label = reader.GetString(0);
-            var value = Convert.ToDecimal(reader.GetValue(1), CultureInfo.InvariantCulture);
-            rows.Add(new Dictionary<string, object> { [query.LabelColumn] = label, [query.ValueColumn] = value });
-            points.Add(new ChartPoint(label, value));
+            var row = new Dictionary<string, object>();
+            for (var index = 0; index < reader.FieldCount; index++) row[columns[index]] = reader.IsDBNull(index) ? "" : reader.GetValue(index);
+            rows.Add(row);
+            if (reader.FieldCount >= 2 && decimal.TryParse(Convert.ToString(reader.GetValue(1), CultureInfo.InvariantCulture), NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
+                points.Add(new ChartPoint(Convert.ToString(reader.GetValue(0), CultureInfo.InvariantCulture) ?? "", value));
         }
 
-        return new AnalyticsResult(questionId, query.Title, [query.LabelColumn, query.ValueColumn], rows,
-            new ChartDefinition(query.ChartType, query.LabelColumn, query.ValueColumn, points), query.Sql,
+        var xAxis = columns.ElementAtOrDefault(0) ?? labelColumn;
+        var yAxis = columns.ElementAtOrDefault(1) ?? valueColumn;
+        return new AnalyticsResult(questionId, title, columns, rows,
+            new ChartDefinition(chartType, xAxis, yAxis, points), sql,
             new ExecutionMetadata("SQL Server read-only query", rows.Count, stopwatch.ElapsedMilliseconds, "retail-demo-v1"));
     }
 

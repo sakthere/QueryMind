@@ -4,7 +4,7 @@
 
 QueryMind is an AI-powered analytics workspace being built to help users explore relational data through natural-language questions. It is a focused portfolio project demonstrating .NET, Angular, SQL Server, secure analytics boundaries, and deliberate product design.
 
-> **Current capability:** A reviewed local provider maps supported questions to approved SQL templates. Every candidate statement is parsed through a SQL AST safety gate before a read-only SQL Server query runs.
+> **Current capability:** A reviewed local provider maps supported questions to approved SQL templates. An optional OpenAI-compatible provider can be configured locally. Every candidate statement is parsed through a SQL AST safety gate before a read-only SQL Server query runs.
 
 ## Why QueryMind?
 
@@ -145,7 +145,7 @@ The current database foundation is deliberately structured for restricted analyt
 ## Known limitations
 
 - Natural-language input maps to a bounded reviewed analysis set, not arbitrary SQL.
-- The local provider only selects application-owned templates; an external model provider is not configured.
+- The local provider only selects application-owned templates. An external provider is opt-in through local environment variables and is never enabled by committed configuration.
 - AI evaluation, model telemetry, and persistent history are planned work.
 - The app is an MVP foundation, not a production-ready analytics service.
 

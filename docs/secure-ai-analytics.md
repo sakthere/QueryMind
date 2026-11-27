@@ -7,7 +7,7 @@ Each natural-language request follows this path:
 1. A provider selects a candidate SQL statement and identifies itself.
 2. SQL Server ScriptDom parses the statement into an AST.
 3. The safety gate accepts exactly one `SELECT`, rejects `SELECT INTO`, external rowsets, multi-statement scripts, and unapproved tables, and only permits the `analytics` schema's curated tables.
-4. Only a reviewed template whose exact SQL matches the approved catalog is executed in this release.
+4. The AST-approved statement is executed through the restricted reader connection. The local provider selects reviewed templates; an external provider must pass the identical gate.
 5. The existing `analytics_reader` SQL Server login runs the statement with `SELECT` access only and a ten-second command timeout.
 6. The response labels its provider and grounds its summary in the returned rows.
 
@@ -16,5 +16,5 @@ This boundary is intentionally more restrictive than the future configurable mod
 ## Current limitations
 
 - The local provider understands the five curated retail analyses only.
-- Query history persistence, external model configuration, regeneration, and evaluation measurements remain upcoming work.
-- The current API does not claim arbitrary natural-language-to-SQL support.
+- An OpenAI-compatible provider is optional and only activates when all three local settings (`AI__BASE_URL`, `AI__MODEL`, and `AI__API_KEY`) are supplied. No default setting makes a model API call.
+- Query history persistence, regeneration, and evaluation measurements remain upcoming work.
