@@ -68,6 +68,8 @@ See the full [architecture notes](docs/architecture.md) and the [architecture de
 | Testing | xUnit foundation, Angular build/type checks |
 | CI | GitHub Actions |
 
+The API and test projects are dependency-audited against NuGet's advisory feed; the current resolved package graph has no reported vulnerable packages.
+
 ## Local development
 
 ### Prerequisites
