@@ -6,7 +6,7 @@ Each natural-language request follows this path:
 
 1. A provider selects a candidate SQL statement and identifies itself.
 2. SQL Server ScriptDom parses the statement into an AST.
-3. The safety gate accepts exactly one `SELECT`, rejects `SELECT INTO`, external rowsets, multi-statement scripts, and unapproved tables, and only permits the `analytics` schema's curated tables.
+3. The safety gate accepts exactly one `SELECT`, rejects `SELECT INTO`, external rowsets, multi-statement scripts, unapproved tables, and non-approved SQL functions; it only permits the curated `analytics` schema.
 4. The AST-approved statement is executed through the restricted reader connection. The local provider selects reviewed templates; an external provider must pass the identical gate.
 5. The existing `analytics_reader` SQL Server login runs the statement with `SELECT` access only and a ten-second command timeout.
 6. The response labels its provider and grounds its summary in the returned rows.

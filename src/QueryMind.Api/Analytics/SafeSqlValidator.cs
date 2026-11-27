@@ -11,6 +11,10 @@ public sealed class SafeSqlValidator
     {
         "orders", "order_items", "products", "categories", "customers", "regions"
     };
+    private static readonly HashSet<string> AllowedFunctions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "SUM", "COUNT", "AVG", "MIN", "MAX", "CONVERT", "CAST", "COALESCE", "ISNULL", "DATEADD", "DATEDIFF", "DATEPART", "YEAR", "MONTH", "DAY", "LOWER", "UPPER", "ROUND"
+    };
 
     public ValidatedSql Validate(string sql)
     {
@@ -51,6 +55,13 @@ public sealed class SafeSqlValidator
         }
         public override void ExplicitVisit(OpenRowsetTableReference node) => Reject("External rowsets are not permitted.");
         public override void ExplicitVisit(OpenQueryTableReference node) => Reject("External queries are not permitted.");
+
+        public override void ExplicitVisit(FunctionCall node)
+        {
+            if (!AllowedFunctions.Contains(node.FunctionName.Value))
+                Reject($"Function '{node.FunctionName.Value}' is not approved for analytics queries.");
+            base.ExplicitVisit(node);
+        }
 
         private void Reject(string reason)
         {

@@ -18,6 +18,8 @@ public sealed class SafeSqlValidatorTests
     [InlineData("SELECT * FROM dbo.users;")]
     [InlineData("SELECT * FROM analytics.orders; SELECT * FROM analytics.customers;")]
     [InlineData("SELECT * INTO #copy FROM analytics.orders;")]
+    [InlineData("SELECT OBJECT_NAME(id) FROM analytics.orders;")]
+    [InlineData("SELECT OPENJSON(status) FROM analytics.orders;")]
     public void Validate_rejects_unsafe_or_unapproved_sql(string sql)
     {
         Assert.Throws<SqlSafetyException>(() => _validator.Validate(sql));
