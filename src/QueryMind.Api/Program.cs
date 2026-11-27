@@ -3,6 +3,7 @@ using System.Threading.RateLimiting;
 using QueryMind.Api.Analytics;
 using QueryMind.Api.Schema;
 using QueryMind.Api.History;
+using QueryMind.Api.Evaluation;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProblemDetails();
@@ -19,6 +20,7 @@ else
     builder.Services.AddSingleton<IAnalyticsModelProvider, RuleBasedAnalyticsModelProvider>();
 builder.Services.AddSingleton<AnalysisOrchestrator>();
 builder.Services.AddSingleton<QueryHistoryRepository>();
+builder.Services.AddSingleton<EvaluationService>();
 builder.Services.AddSingleton<SchemaDiscoveryService>();
 var app = builder.Build();
 app.UseExceptionHandler();

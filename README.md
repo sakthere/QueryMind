@@ -28,6 +28,7 @@ The application, rather than an LLM, remains in control of schema access, SQL va
 - Suggested revenue, category, customer, region, and cancellation analyses.
 - A bounded local natural-language provider for the five curated analyses, with provider attribution.
 - Curated schema context and a single bounded repair attempt for an explicitly configured external provider.
+- A runnable local-provider regression suite for expected query shape and SQL safety; it never calls an external model.
 - SQL Server ScriptDom AST validation: one `SELECT`, approved `analytics` tables only, no `SELECT INTO`, external rowsets, or multi-statement scripts.
 - Results canvas with a visualization, tabular data, SQL preview, and execution metadata.
 - Schema Explorer backed by the API's curated schema contract.
@@ -147,7 +148,7 @@ The current database foundation is deliberately structured for restricted analyt
 
 - Natural-language input maps to a bounded reviewed analysis set, not arbitrary SQL.
 - The local provider only selects application-owned templates. An external provider is opt-in through local environment variables and is never enabled by committed configuration.
-- AI evaluation and model telemetry are planned work.
+- External-provider evaluation and production telemetry are planned work; the built-in local-provider regression checks are available from the Evaluations screen.
 - The app is an MVP foundation, not a production-ready analytics service.
 
 ## Documentation
