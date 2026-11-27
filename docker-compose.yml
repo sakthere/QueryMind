@@ -26,5 +26,17 @@ services:
       - ./infra/sqlserver/01-schema-and-seed.sql:/scripts/01-schema-and-seed.sql:ro
     command: ["/bin/sh", "-c", "/opt/mssql-tools18/bin/sqlcmd -C -S sqlserver -U sa -P \"$$MSSQL_SA_PASSWORD\" -v \"AnalyticsReaderPassword=$$ANALYTICS_READER_PASSWORD\" -i /scripts/01-schema-and-seed.sql"]
     restart: "no"
+  app-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env}
+      QUERYMIND_APP_PASSWORD: ${QUERYMIND_APP_PASSWORD:?Set QUERYMIND_APP_PASSWORD in .env}
+    volumes:
+      - ./infra/sqlserver/02-application-history.sql:/scripts/02-application-history.sql:ro
+    command: ["/bin/sh", "-c", "/opt/mssql-tools18/bin/sqlcmd -C -S sqlserver -U sa -P \"$$MSSQL_SA_PASSWORD\" -v \"QueryMindAppPassword=$$QUERYMIND_APP_PASSWORD\" -i /scripts/02-application-history.sql"]
+    restart: "no"
 volumes:
   sqlserver-data:

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using QueryMind.Api.Analytics;
 using QueryMind.Api.Schema;
+using QueryMind.Api.History;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProblemDetails();
@@ -17,6 +18,7 @@ if (string.Equals(builder.Configuration["AI:Provider"], "openai-compatible", Str
 else
     builder.Services.AddSingleton<IAnalyticsModelProvider, RuleBasedAnalyticsModelProvider>();
 builder.Services.AddSingleton<AnalysisOrchestrator>();
+builder.Services.AddSingleton<QueryHistoryRepository>();
 builder.Services.AddSingleton<SchemaDiscoveryService>();
 var app = builder.Build();
 app.UseExceptionHandler();

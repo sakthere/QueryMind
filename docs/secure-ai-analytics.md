@@ -17,4 +17,4 @@ This boundary is intentionally more restrictive than the future configurable mod
 
 - The local provider understands the five curated retail analyses only.
 - An OpenAI-compatible provider is optional and only activates when all three local settings (`AI__BASE_URL`, `AI__MODEL`, and `AI__API_KEY`) are supplied. No default setting makes a model API call.
-- Query history persistence, regeneration, and evaluation measurements remain upcoming work.
+- Query history is saved in the separate application database when its local password is configured. Regeneration and evaluation measurements remain upcoming work.

@@ -30,7 +30,7 @@ The application, rather than an LLM, remains in control of schema access, SQL va
 - SQL Server ScriptDom AST validation: one `SELECT`, approved `analytics` tables only, no `SELECT INTO`, external rowsets, or multi-statement scripts.
 - Results canvas with a visualization, tabular data, SQL preview, and execution metadata.
 - Schema Explorer backed by the API's curated schema contract.
-- In-browser query history for the current session.
+- Persistent query history in the separate `QueryMindApp` database when `QUERYMIND_APP_PASSWORD` is configured locally; session history remains available otherwise.
 - SQL Server 2022 Docker environment with separate `QueryMindAnalytics` and `QueryMindApp` databases.
 - Reproducible retail dataset: 2,000 customers, 100 products, and 10,000 deterministic orders.
 - SQL Server `analytics_reader` login restricted to `SELECT` access on the analytics schema.
@@ -83,7 +83,7 @@ docker compose up -d
 docker compose ps
 ```
 
-This starts SQL Server on `localhost:1433`, creates both databases, seeds the analytics dataset, and creates the read-only analytics login.
+This starts SQL Server on `localhost:1433`, creates both databases, seeds the analytics dataset, creates the read-only analytics login, and provisions the application-only history login. All passwords remain local to `.env`.
 
 ### Start the API and frontend
 
@@ -146,7 +146,7 @@ The current database foundation is deliberately structured for restricted analyt
 
 - Natural-language input maps to a bounded reviewed analysis set, not arbitrary SQL.
 - The local provider only selects application-owned templates. An external provider is opt-in through local environment variables and is never enabled by committed configuration.
-- AI evaluation, model telemetry, and persistent history are planned work.
+- AI evaluation and model telemetry are planned work.
 - The app is an MVP foundation, not a production-ready analytics service.
 
 ## Documentation
