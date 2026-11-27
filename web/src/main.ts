@@ -1,3 +1,4 @@
+import 'zone.js';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { Component, computed, signal } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
