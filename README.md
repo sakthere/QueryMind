@@ -68,7 +68,7 @@ See the full [architecture notes](docs/architecture.md) and the [architecture de
 | Testing | xUnit foundation, Angular build/type checks |
 | CI | GitHub Actions |
 
-The API and test projects are dependency-audited against NuGet's advisory feed; the current resolved package graph has no reported vulnerable packages.
+The API and test projects are dependency-audited against NuGet's advisory feed; the current resolved package graph has no reported vulnerable packages. CI also builds the Angular production bundle, runs backend tests, audits npm packages, and scans for common committed credential formats.
 
 ## Local development
 

@@ -10,6 +10,8 @@ jobs:
       - run: dotnet restore QueryMind.slnx
       - run: dotnet build QueryMind.slnx --no-restore --configuration Release
       - run: dotnet test QueryMind.slnx --no-build --configuration Release
+      - run: dotnet list src/QueryMind.Api/QueryMind.Api.csproj package --include-transitive --vulnerable
+      - run: dotnet list tests/QueryMind.Api.Tests/QueryMind.Api.Tests.csproj package --include-transitive --vulnerable
   frontend:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: web } }
@@ -19,3 +21,14 @@ jobs:
         with: { node-version: 22, cache: npm, cache-dependency-path: web/package-lock.json }
       - run: npm ci
       - run: npm run build
+      - run: npm audit --audit-level=high
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject common committed credential formats
+        run: |
+          if git grep -nEI '(sk-[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{30,}|AIza[0-9A-Za-z_-]{30,})' -- . ':!.env.example'; then
+            echo "Potential credential detected. Store it in ignored local environment configuration instead."
+            exit 1
+          fi
